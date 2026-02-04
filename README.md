@@ -1,19 +1,34 @@
-# Deploy this project on Vercel
+# Quiz Game (Static Site)
 
-This is a simple static project. The `vercel.json` routes root (`/`) to `Quiz.html` so the site serves at the project root.
+This is a simple HTML/CSS/JS quiz project.
 
-Quick deploy options:
+## Deploy on Vercel
 
-- Using Vercel CLI (recommended):
+Vercel serves static sites automatically when there is an `index.html` at the repository root.
+
+### Deploy from Vercel Dashboard (recommended)
+
+- Go to Vercel → **Add New… → Project**
+- Import the GitHub repo
+- **Framework Preset**: Other
+- **Build Command**: (leave empty)
+- **Output Directory**: (leave empty)
+- Click **Deploy**
+
+### Deploy using Vercel CLI
 
 ```bash
-npx vercel login
-cd "c:\Users\saksh\OneDrive\Desktop\Quiz"
+cd "C:\Users\saksh\OneDrive\Desktop\Quiz"
 npx vercel
 ```
 
-- Using the Vercel Dashboard:
-  - Create a new project and link your repository or drag-and-drop this folder.
-  - Vercel will detect a static site; deploy.
+For a production deployment:
 
-Optional: rename `Quiz.html` to `index.html` to avoid the route and remove `vercel.json`.
+```bash
+npx vercel --prod
+```
+
+## Notes
+
+- Entry point is `index.html`.
+- `Quiz.html` is kept for compatibility, but Vercel will open `index.html` at `/`.

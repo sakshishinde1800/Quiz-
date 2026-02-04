@@ -1,6 +1,4 @@
 {
-    "version": 2,
-    "routes": [
-        { "src": "/", "dest": "/Quiz.html" }
-    ]
+  "cleanUrls": true,
+  "trailingSlash": false
 }

@@ -43,67 +43,105 @@
     },
 ];
 
-let questionElement = document.getElementById("question");
-let optionElement = document.getElementById("option");
-let scoreElement = document.getElementById("score");
-let btnA = document.getElementById("btnA");
+// DOM references
+const questionElement = document.getElementById("question");
+const optionElement = document.getElementById("option");
+const scoreElement = document.getElementById("score");
+const btnA = document.getElementById("btnA");
 
+// Quiz state
 let score = 0;
-let currentQuetion = 0;
+let currentQuestion = 0;
+let questionNumber = 1;
+let hasAnsweredCurrent = false;
 
-let number = 1;
+function renderScore() {
+    scoreElement.textContent = `Current Score : ${score}/${QuestionObject.length}`;
+}
 
-function showQuetion(){
+function disableOptions() {
+    const buttons = optionElement.querySelectorAll(".option-btn");
+    buttons.forEach((b) => {
+        b.disabled = true;
+    });
+}
 
-    //! Object Destucturing------
-    
-    let {question,options,correctAnswer} = QuestionObject[currentQuetion];
+function handleAnswer(selectedValue, correctAnswer, clickedButton) {
+    if (hasAnsweredCurrent) return;
+    hasAnsweredCurrent = true;
 
-    questionElement.textContent= `Q${number}.${question}`;
+    const optionButtons = optionElement.querySelectorAll(".option-btn");
 
-    //! loading option botton----
-    options.map((opt)=>{
-        let btn = document.createElement('button');
-        btn.setAttribute("i","btn");
+    optionButtons.forEach((btn) => {
+        const value = btn.textContent;
+        if (value == correctAnswer) {
+            btn.classList.add("correct");
+        }
+    });
+
+    if (selectedValue == correctAnswer) {
+        score += 1;
+        clickedButton.classList.add("correct");
+    } else {
+        score -= 0.25;
+        clickedButton.classList.add("incorrect");
+    }
+
+    if (score < 0) score = 0;
+
+    renderScore();
+    disableOptions();
+}
+
+function showQuestion() {
+    const { question, options, correctAnswer } = QuestionObject[currentQuestion];
+
+    hasAnsweredCurrent = false;
+    optionElement.textContent = "";
+
+    questionElement.textContent = `Q${questionNumber}. ${question}`;
+    renderScore();
+
+    options.forEach((opt) => {
+        const btn = document.createElement("button");
+        btn.className = "option-btn";
         btn.textContent = opt;
-        optionElement.append(btn)
-
-       scoreElement.textContent = `Current Score : ${score}/${QuestionObject.length}`;
-       btn.addEventListener("click",()=>{
-        if (opt==correctAnswer){
-            score+=1;
-        }
-        else{
-            score-=0.25
-        }
-        //console.log(score);
-
-        nextQuetion();
-       })
-       
-
-    })
-
+        btn.addEventListener("click", () => handleAnswer(opt, correctAnswer, btn));
+        optionElement.append(btn);
+    });
 }
-showQuetion();
 
-function nextQuetion(){
-    currentQuetion++;
-    optionElement.textContent=''
-    if(currentQuetion==QuestionObject.length){
-        questionElement.textContent = "Quiz Completed🥳"
-        scoreElement.textContent = `Your Score :${score}/${QuestionObject.length}`;
-        btnA.style.display='None';
+showQuestion();
+
+function nextQuestion() {
+    if (!hasAnsweredCurrent) {
+        alert("Please select an option before moving to the next question.");
+        return;
     }
-    else{
-        number+=1
-        showQuetion();
+
+    currentQuestion++;
+
+    if (currentQuestion === QuestionObject.length) {
+        optionElement.textContent = "";
+        questionElement.textContent = "Quiz Completed🥳";
+        scoreElement.textContent = `Your Score : ${score}/${QuestionObject.length}`;
+        btnA.textContent = "Restart Quiz";
+        btnA.onclick = () => {
+            score = 0;
+            currentQuestion = 0;
+            questionNumber = 1;
+            btnA.textContent = "Next Question";
+            showQuestion();
+        };
+    } else {
+        questionNumber += 1;
+        showQuestion();
     }
 }
 
-btnA.addEventListener("click",()=>{
-    nextQuetion()
-})
+btnA.addEventListener("click", () => {
+    nextQuestion();
+});
 
 
 
